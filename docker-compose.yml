@@ -1,0 +1,28 @@
+services:
+  redroid:
+    image: redroid-lite:13-v3
+    container_name: redroid-lite
+    privileged: true
+    tty: true
+    stdin_open: true
+    restart: unless-stopped
+    ports:
+      - "5555:5555"
+    volumes:
+      - /dev/binderfs:/dev/binderfs
+      - redroid-data:/data
+    command:
+      - androidboot.use_memfd=true
+      - androidboot.redroid_gpu_mode=guest
+      - ro.config.low_ram=true
+      - ro.lmk.kill_heaviest_task=true
+      - dalvik.vm.heapgrowthlimit=48m
+      - dalvik.vm.heapsize=96m
+      - persist.logd.size=65536
+      - persist.traced.enable=0
+      - ro.statsd.enable=false
+      - ro.enable.native.bridge.exec64=1
+      - ro.dalvik.vm.native.bridge=libndk_translation.so
+
+volumes:
+  redroid-data:

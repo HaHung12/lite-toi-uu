@@ -1,0 +1,16 @@
+[Unit]
+Description=Mount Android binderfs for Redroid
+DefaultDependencies=no
+Before=docker.service
+After=local-fs.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStartPre=-/bin/mkdir -p /dev/binderfs
+ExecStartPre=-/sbin/modprobe binder_linux
+ExecStart=/bin/bash -c 'mountpoint -q /dev/binderfs || mount -t binder binder /dev/binderfs'
+ExecStop=/bin/umount /dev/binderfs
+
+[Install]
+WantedBy=multi-user.target

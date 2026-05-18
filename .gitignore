@@ -1,0 +1,25 @@
+# Android data
+data/
+*.img
+*.tar
+*.tgz
+
+# Build artifacts
+build/strip.sh
+/tmp/*.log
+
+# Backup files
+*.bak
+*.bak.*
+
+# Editor
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
