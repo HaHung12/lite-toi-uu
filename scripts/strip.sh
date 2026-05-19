@@ -7,7 +7,7 @@ cd "$SYSTEM"
 
 echo "[+] Before strip: $(du -sh . | cut -f1)"
 
-# Media & fonts (giảm size, không ảnh hưởng boot)
+# Media & fonts (giảm size, không ảnh hưởng UI)
 echo "[+] Removing media..."
 rm -rf media/audio/* media/bootanimation.zip media/shutdownanimation.zip 2>/dev/null || true
 rm -rf wallpaper/* product/wallpaper/* product/media/audio/* 2>/dev/null || true
@@ -19,7 +19,7 @@ if [ -d fonts ]; then
     cd ..
 fi
 
-# /system/app — XÓA CHÍNH XÁC 38 packages của bạn (folder tương ứng)
+# /system/app - giữ nguyên strip như v3
 echo "[+] Stripping /system/app..."
 cd app 2>/dev/null && {
     rm -rf \
@@ -45,7 +45,7 @@ cd app 2>/dev/null && {
     cd ..
 }
 
-# /system/priv-app — XÓA telephony + một số provider trong list disable
+# /system/priv-app - giữ nguyên strip như v3
 echo "[+] Stripping /system/priv-app..."
 cd priv-app 2>/dev/null && {
     rm -rf \
@@ -72,15 +72,14 @@ cd priv-app 2>/dev/null && {
     cd ..
 }
 
-# /system/system_ext/priv-app — XÓA SystemUI, Launcher, Settings
+# /system/system_ext/priv-app - GIỮ SystemUI, Launcher3QuickStep, Provision
+# (Khác image v3 ở chỗ này)
 echo "[+] Stripping /system/system_ext/priv-app..."
 cd system_ext/priv-app 2>/dev/null && {
     rm -rf \
-        SystemUI \
-        Launcher3QuickStep \
         Settings \
+        Launcher3QuickStep \
         WallpaperCropper \
-        Provision \
         2>/dev/null || true
     cd ../..
 }
@@ -89,7 +88,7 @@ cd system_ext/priv-app 2>/dev/null && {
 echo "[+] Stripping /system/system_ext/app..."
 rm -rf system_ext/app/WAPPushManager 2>/dev/null || true
 
-# /system/product/app — XÓA các app GUI
+# /system/product/app - giữ nguyên strip như v3
 echo "[+] Stripping /system/product/app..."
 cd product/app 2>/dev/null && {
     rm -rf \
@@ -102,11 +101,12 @@ cd product/app 2>/dev/null && {
         Music \
         PhotoTable \
         QuickSearchBox \
+        webview \
         2>/dev/null || true
     cd ../..
 }
 
-# /system/product/priv-app — XÓA Contacts, OneTimeInitializer (giữ SettingsIntelligence vì init có thể cần)
+# /system/product/priv-app - giữ nguyên strip như v3
 echo "[+] Stripping /system/product/priv-app..."
 cd product/priv-app 2>/dev/null && {
     rm -rf \
