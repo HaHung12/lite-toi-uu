@@ -1,6 +1,6 @@
 services:
   redroid:
-    image: redroid-lite:13-v3
+    image: redroid-lite:13-v5
     container_name: redroid-lite
     privileged: true
     tty: true
@@ -8,21 +8,48 @@ services:
     restart: unless-stopped
     ports:
       - "5555:5555"
+    devices:
+      - /dev/dri:/dev/dri
     volumes:
       - /dev/binderfs:/dev/binderfs
       - redroid-data:/data
     command:
+      # GPU host mode (giữ - cần cho Roblox render)
       - androidboot.use_memfd=true
-      - androidboot.redroid_gpu_mode=guest
-      - ro.config.low_ram=true
-      - ro.lmk.kill_heaviest_task=true
-      - dalvik.vm.heapgrowthlimit=48m
-      - dalvik.vm.heapsize=96m
-      - persist.logd.size=65536
-      - persist.traced.enable=0
-      - ro.statsd.enable=false
+      - androidboot.redroid_gpu_mode=host
+      - androidboot.redroid_gpu_node=/dev/dri/renderD128
+      - ro.hardware.gralloc=cros
+      - debug.hwui.renderer=opengles
+      - ro.hwui.use_vulkan=false
+      # NDK translation
       - ro.enable.native.bridge.exec64=1
       - ro.dalvik.vm.native.bridge=libndk_translation.so
+      # Vector 1: Dalvik heap nhỏ hơn (giảm từ 256m/192m)
+      - dalvik.vm.heapsize=192m
+      - dalvik.vm.heapgrowthlimit=128m
+      - dalvik.vm.heapstartsize=4m
+      - dalvik.vm.heaptargetutilization=0.75
+      - dalvik.vm.heapminfree=512k
+      - dalvik.vm.heapmaxfree=2m
+      # Vector 2: Disable services không cần
+      - ro.config.low_ram=true
+      - ro.lmk.kill_heaviest_task=true
+      - ro.lmk.use_minfree_levels=true
+      - persist.sys.usap_pool_enabled=false
+      - ro.zygote.disable_gl_preload=true
+      - persist.device_config.runtime_native.usap_pool_enabled=false
+      # Display
+      - androidboot.redroid_width=1024
+      - androidboot.redroid_height=600
+      - androidboot.redroid_dpi=240
+      - androidboot.redroid_fps=30
+      # Disable disk-heavy services
+      - ro.bluetooth.disabled=true
+      - persist.traced.enable=0
+      - persist.logd.size=65536
+      - ro.statsd.enable=false
+      - persist.sys.disable_rescue=true
+      - persist.sys.fflag.override.settings_provider_model=false
 
 volumes:
   redroid-data:

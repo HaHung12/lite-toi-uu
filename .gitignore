@@ -1,25 +1,11 @@
-# Android data
-data/
-*.img
-*.tar
-*.tgz
+# APK files (too large for GitHub)
+roblox-apks/*.apk
+roblox-apks/*.xapk
 
-# Build artifacts
-build/strip.sh
-/tmp/*.log
+# Backups
+docker-compose.yml.bak.*
+scripts/strip.sh.bak.*
 
-# Backup files
-*.bak
-*.bak.*
-
-# Editor
-.vscode/
-.idea/
-*.swp
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Logs
+# Local
 *.log
+*.tmp
